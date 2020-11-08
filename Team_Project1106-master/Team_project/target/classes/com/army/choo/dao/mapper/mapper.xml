@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+ "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+ 
+ <mapper namespace="Member"> 
+	<insert id="ComMemberInsert" parameterType="commember">
+		INSERT INTO COMMEMBER(COMNUMBER, COMPASSWORD, COMADDRESS1, COMADDRESS2, COMADDRESS3, COMADDRESS4, COMPHONE, COMPANY, COMOFFICE) 
+			VALUES(#{comnumber}, #{compassword}, #{comaddress1}, #{comaddress2}, #{comaddress3}, #{comaddress4}, #{comphone}, #{company}, #{comoffice})
+	</insert>
+	
+
+	<!-- 글 갯수가 몇개냐 -->
+	<select id="commembercount" resultType="int">
+		SELECT COUNT(COMNUMBER) FROM COMMEMBER
+	</select>
+	
+		<!--RN을 기준으로 시작행과 끝행 범위에 있는 글 가져오기  -->
+ 	<select id="commemberlist" parameterType="page" resultType="commember">
+ 		SELECT * FROM (SELECT C.*,ROW_NUMBER() OVER(ORDER BY COMNUMBER DESC)
+ 		 AS RN FROM COMMEMBER C) WHERE RN BETWEEN #{startrow} AND #{endrow}
+ 	</select>
+	
+	<!-- 기업로그인 -->
+	<select id="ComLoginForm" parameterType="commember" resultType="String">
+		SELECT COMNUMBER FROM COMMEMBER WHERE COMNUMBER=#{comnumber} AND COMPASSWORD=#{compassword}
+	</select>
+	
+	<!--일반 회원 회원가입  -->
+	<insert id="memberInsert" parameterType="member">
+		INSERT INTO MEMBER(MID,MPASSWORD,MNAME,MADDRESS,MPHONE,MEMAIL,MGENDER,MBIRTH)
+			VALUES(#{mid},#{mpassword},#{mname},#{maddress},#{mphone},#{memail},#{mgender},#{mbirth})
+	</insert>
+	
+	<!--아이디 중복 체크  -->
+	<select id="idOverlap" parameterType="String" resultType="String">
+		SELECT MID FROM MEMBER WHERE MID=#{mid}
+	</select>
+	
+	<!-- 일반 회원 로그인 -->
+	<select id="memberLogin" parameterType="member" resultType="String">
+		SELECT MID FROM MEMBER WHERE MID=#{mid} AND MPASSWORD=#{mpassword}
+	</select>
+	
+	
+ </mapper>
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
